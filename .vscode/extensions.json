@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "orta.vscode-jest",
+    "msjsdiag.debugger-for-chrome",
+    "jpoissonnier.vscode-styled-components"
+  ]
+}
