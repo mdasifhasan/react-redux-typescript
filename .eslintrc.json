@@ -2,10 +2,12 @@
     "parser": "@typescript-eslint/parser",
     "extends": [
         "react-app",
-        "airbnb"
+        "airbnb",
+        "plugin:cypress/recommended"
     ],
     "plugins": [
-        "react-hooks"
+        "react-hooks",
+        "cypress"
     ],
     "settings": {
         "import/resolver": {
