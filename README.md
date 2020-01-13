@@ -1,3 +1,12 @@
+## Project Description
+Template project to develop Single Page Web Application using React, Redux, Jest, Cypress in TypeScript using fully configured VSCode.
+
+Checkout the following tutorial to recreate the template from scratch!
+
+https://github.com/mdasifhasan/react-redux-typescript/wiki/Steps-to-recreate-the-template
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
