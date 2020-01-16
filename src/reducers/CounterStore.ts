@@ -1,5 +1,5 @@
-import { Action, Reducer } from 'redux';
-import { CounterActions } from '../actions/CounterActions';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppThunk } from '.';
 
 // -----------------
 // STATE - This defines the type of data maintained in this Redux store.
@@ -8,30 +8,35 @@ export interface State {
   count: number;
 }
 
-// ----------------
-// REDUCER - For a given state and action, returns the new state. To support time travel, this must not mutate the old state.
-
 const initialState: State = {
   count: 0,
 };
 
-export const reducer: Reducer<State> = (
-  state: State | undefined,
-  incomingAction: Action
-): State => {
-  if (state === undefined) {
-    return initialState;
-  }
-
-  const action = incomingAction as CounterActions;
-  switch (action.type) {
-    case 'INCREMENT_COUNT':
-      return { count: state.count + 1 };
-    case 'DECREMENT_COUNT':
-      return { count: state.count - 1 };
-    case 'INCREMENT_ASYNC':
-      return { count: state.count + action.amount };
-    default:
+const reducerSlice = createSlice({
+  name: 'Counter',
+  initialState,
+  reducers: {
+    increase(state) {
+      state.count = state.count + 1;
       return state;
-  }
+    },
+
+    increaseAmount(state, action: PayloadAction<number>) {
+      state.count = state.count + action.payload;
+      return state;
+    },
+  },
+});
+
+export const { increase, increaseAmount } = reducerSlice.actions;
+export default reducerSlice.reducer;
+
+export const increaseAsync = (time: number): AppThunk => async (
+  dispatch,
+  getState
+) => {
+  setTimeout(() => {
+    const count = getState().counter.count;
+    dispatch(increaseAmount(count === 0 ? 1 : count));
+  }, time);
 };

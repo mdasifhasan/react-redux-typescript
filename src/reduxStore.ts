@@ -1,30 +1,29 @@
-import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { History } from 'history';
-import { ApplicationState, reducers } from './reducers';
+import { routerMiddleware } from 'connected-react-router';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import rootReducer, { history } from './reducers';
 
-export default function reduxStore(
-  history: History,
-  initialState?: ApplicationState
-) {
-  const middleware = [thunk, routerMiddleware(history)];
+const middleware = [
+  ...getDefaultMiddleware(),
+  thunk,
+  routerMiddleware(history),
+];
 
-  const rootReducer = combineReducers({
-    ...reducers,
-    router: connectRouter(history),
+const store = configureStore({
+  reducer: rootReducer,
+  middleware,
+  devTools: process.env.NODE_ENV !== 'production',
+  enhancers: [],
+});
+
+if (process.env.NODE_ENV === 'development' && module.hot) {
+  module.hot.accept('./reducers/index', () => {
+    const newRootReducer = require('./reducers/index').default;
+    store.replaceReducer(newRootReducer);
   });
-
-  const enhancers = [];
-  const windowIfDefined =
-    typeof window === 'undefined' ? null : (window as any);
-  if (windowIfDefined && windowIfDefined.__REDUX_DEVTOOLS_EXTENSION__) {
-    enhancers.push(windowIfDefined.__REDUX_DEVTOOLS_EXTENSION__());
-  }
-
-  return createStore(
-    rootReducer,
-    initialState,
-    compose(applyMiddleware(...middleware), ...enhancers)
-  );
 }
+
+export default store;
+export { history };
+
+export type AppDispatch = typeof store.dispatch;

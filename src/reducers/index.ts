@@ -1,13 +1,20 @@
+import { combineReducers } from 'redux';
+import { connectRouter } from 'connected-react-router';
 import * as Counter from './CounterStore';
+import { createBrowserHistory } from 'history';
+import { TypedUseSelectorHook, useSelector } from 'react-redux';
+import { ThunkAction } from 'redux-thunk';
+import { Action } from '@reduxjs/toolkit';
 
-// The top-level state object
-export interface ApplicationState {
-  counter: Counter.State | undefined;
-}
+export const history = createBrowserHistory();
 
-// Whenever an action is dispatched, Redux will update each top-level application state property using
-// the reducer with the matching name. It's important that the names match exactly, and that the reducer
-// acts on the corresponding ApplicationState property type.
-export const reducers = {
-  counter: Counter.reducer,
-};
+const rootReducer = combineReducers({
+  counter: Counter.default,
+  router: connectRouter(history),
+});
+
+export default rootReducer;
+
+export type RootState = ReturnType<typeof rootReducer>;
+export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
+export type AppThunk = ThunkAction<void, RootState, null, Action<string>>;

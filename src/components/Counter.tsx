@@ -1,51 +1,42 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
-import { ApplicationState } from '../reducers';
-import * as CounterStore from '../reducers/CounterStore';
-import * as CounterActions from '../actions/CounterActions';
+import { useDispatch } from 'react-redux';
+import { useTypedSelector } from '../reducers';
+import { increaseAsync, increase } from '../reducers/CounterStore';
 
-type CounterProps = CounterStore.State &
-  typeof CounterActions.actions &
-  RouteComponentProps<{}>;
+export default () => {
+  const count = useTypedSelector(state => state.counter.count);
+  const dispatch = useDispatch();
 
-class Counter extends React.PureComponent<CounterProps> {
-  public render() {
-    return (
-      <React.Fragment>
-        <h1>Counter</h1>
+  return (
+    <React.Fragment>
+      <h1>Counter</h1>
 
-        <p>This is a simple example of a React component.</p>
+      <p>This is a simple example of a React component.</p>
 
-        <p aria-live="polite">
-          Current count: <strong>{this.props.count}</strong>
-        </p>
+      <p aria-live="polite">
+        Current count: <strong>{count}</strong>
+      </p>
 
-        <button
-          type="button"
-          className="btn btn-primary btn-lg"
-          onClick={() => {
-            this.props.increment();
-          }}
-        >
-          Increment
-        </button>
+      <button
+        type="button"
+        className="btn btn-primary btn-lg"
+        onClick={() => {
+          dispatch(increase());
+        }}
+      >
+        Increment
+      </button>
 
-        <button
-          type="button"
-          className="btn btn-primary btn-lg"
-          onClick={() => {
-            this.props.incrementAsync(1000);
-          }}
-        >
-          IncrementAsync
-        </button>
-      </React.Fragment>
-    );
-  }
-}
-
-export default connect(
-  (state: ApplicationState) => state.counter,
-  CounterActions.actions
-)(Counter as any);
+      <button
+        type="button"
+        className="btn btn-primary btn-lg"
+        style={{ marginLeft: '10px' }}
+        onClick={() => {
+          dispatch(increaseAsync(1000));
+        }}
+      >
+        IncrementAsync
+      </button>
+    </React.Fragment>
+  );
+};
